@@ -17,7 +17,7 @@ class MainApp(CTk):
         self.frames = {}
         
         # Inicializar con la interfaz principal
-        self.show_frame(pruebacopy.AdminLogin)
+        self.show_frame(pruebacopy.InterfazUsuario)
 
     def show_frame(self, frame_class):
         # Ocultar el frame actual si ya hay uno visible

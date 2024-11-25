@@ -63,96 +63,133 @@ class Admin(CTkFrame):
         button_height = 90  # Alto uniforme para todos los botones
 
         Nuevo_usuario = CTkButton(
-            frame1, text="Nuevo Usuario", font=("", 20, "bold"), fg_color="#0085FF",
+            frame1, text="Nuevo Registro", font=("", 20, "bold"), fg_color="#0085FF",
             cursor="hand2", corner_radius=15, command=lambda: controller.show_frame(InterfazUsuario),
             image=Nuevo_img, width=button_width, height=button_height
         )
         Nuevo_usuario.pack(pady=20)
 
         Modificar_usuario = CTkButton(
-            frame1, text="Modificar Usuario", font=("", 20, "bold"), fg_color="#0085FF",
+            frame1, text="Modificar Registro", font=("", 20, "bold"), fg_color="#0085FF",
             cursor="hand2", corner_radius=15, image=Modificar_img,
             width=button_width, height=button_height
         )
         Modificar_usuario.pack(pady=20)
 
         Eliminar_usuario = CTkButton(
-            frame1, text="Eliminar Usuario", font=("", 20, "bold"), fg_color="#0085FF",
+            frame1, text="Eliminar Registro", font=("", 20, "bold"), fg_color="#0085FF",
             cursor="hand2", corner_radius=15, image=Eliminar_img,
             width=button_width, height=button_height
         )
         Eliminar_usuario.pack(pady=20)
 
+
+
+
 class InterfazUsuario(CTkFrame):
     def __init__(self, parent, controller):
         super().__init__(parent, fg_color="white")
-        self.grid_rowconfigure(0, weight=1)  
-        self.grid_columnconfigure(0, weight=1)  
-        
-        # Create the main frame
-        frame1 = CTkFrame(self, fg_color="#D9D9D9", corner_radius=20)
-        frame1.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
-        frame2=CTkFrame(self, fg_color="white", corner_radius=20)
-        frame2.grid(row=1, column=0, padx=30 , sticky="nsew")
-         # Button to go back
-        Regresar = CTkButton(frame2, text="Regresar", font=("", 15, "bold"), height=50, 
-                             fg_color="#0085FF", cursor="hand2", corner_radius=15, command=lambda:controller.show_frame(Admin))
-        Regresar.grid(row=0,column=0)  
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
 
-        # Save button with validation
-        guardar = CTkButton(frame2, text="Guardar", font=("", 15, "bold"), height=50, 
-                            fg_color="#0085FF", cursor="hand2", corner_radius=15, 
+        # Marco principal
+        scrollable_frame = CTkScrollableFrame(self, fg_color="#D9D9D9", corner_radius=20)
+        scrollable_frame.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
+        frame2 = CTkFrame(self, fg_color="white", corner_radius=20)
+        frame2.grid(row=1, column=0, padx=30, pady=(10, 30), sticky="nsew")
+
+        # Configurar columnas de frame2
+        frame2.grid_columnconfigure(0, weight=1)
+        frame2.grid_columnconfigure(1, weight=1)
+        frame2.grid_columnconfigure(2, weight=1)
+
+        # Botones
+        Regresar = CTkButton(frame2, text="Regresar", font=("", 15, "bold"), height=50,
+                             fg_color="#FF5C5C", cursor="hand2", corner_radius=15,
+                             command=lambda: controller.show_frame(Admin))
+        Regresar.grid(row=0, column=0, sticky="w", padx=(30, 10), pady=(0, 10))
+
+        guardar = CTkButton(frame2, text="Guardar", font=("", 15, "bold"), height=50,
+                            fg_color="#0085FF", cursor="hand2", corner_radius=15,
                             command=self.validar_datos)
-        guardar.grid(row=0,column=1)
-        # Title
-        title = CTkLabel(frame1, text="Ingrese los datos: ", text_color="black", font=("", 35, "bold"))
-        title.grid(row=0, column=0, sticky="ns", pady=30, padx=10)
+        guardar.grid(row=0, column=2, sticky="e", padx=(10, 30), pady=(0, 10))
 
-        # Option menu for TipoRegistro
-        TipoRegistro = CTkOptionMenu(frame1, values=["Compra", "Donacion", "Dacion", "Fabricacion", "Comodato"],
+        # Título
+        title = CTkLabel(scrollable_frame, text="Registro de Inventario", text_color="black", font=("", 35, "bold"))
+        title.grid(row=0, column=0, sticky="n", pady=20)
+
+        # Sección: Información general
+        TipoRegistro = CTkOptionMenu(scrollable_frame, values=["Compra", "Donacion", "Dacion", "Fabricacion", "Comodato"],
                                       text_color="white", fg_color="black", font=("",15,"bold"), height=40)
         TipoRegistro.grid(row=1, column=0, sticky="ew", padx=30, pady=5)
 
-        # Entry fields for name, lastname, DNI, and password
-        self.create_entry(frame1, "Nombre responsable", 2)
-        self.create_entry(frame1, "Apellidos", 3)
-        self.create_entry(frame1, "DNI", 4)
-        self.create_entry(frame1, "Estado", 5)
-        # Result label to show validation messages
-        self.resultado_label = CTkLabel(frame1, text="")
-        self.resultado_label.grid(row=7, column=0, sticky="nsew", pady=10, padx=30)
+        self.Nombres = self.create_entry(scrollable_frame, "Nombre", 2)
+        self.Apellidos = self.create_entry(scrollable_frame, "Apellidos", 3)
+        self.Fecha_Ingreso = self.create_entry(scrollable_frame, "Fecha Ingreso", 4)
+        self.Fecha_Salida = self.create_entry(scrollable_frame, "Fecha Salida", 5)
 
-        # Configure grid weights for responsiveness
-        for i in range(8):
-            frame1.grid_rowconfigure(i, weight=1)
-        frame1.grid_columnconfigure(0, weight=1)
+        # Sección: Detalles adicionales
+        section_title2 = CTkLabel(scrollable_frame, text="Detalles Adicionales", text_color="black", font=("", 20, "bold"))
+        section_title2.grid(row=6, column=0, sticky="w", padx=30, pady=(10, 5))
+
+        self.Descripcion = self.create_entry(scrollable_frame, "Descripción", 7)
+        self.Cantidad = self.create_entry(scrollable_frame, "Cantidad", 8)
+        self.Valor_Unitario = self.create_entry(scrollable_frame, "Valor Unitario", 9)
+        self.Estado = self.create_entry(scrollable_frame, "Estado", 10)
+        self.Ubicacion = self.create_entry(scrollable_frame, "Ubicación", 11)
+        self.Registro_Fotografico = self.create_entry(scrollable_frame, "Registro Fotográfico", 12)
+        self.UAA = self.create_entry(scrollable_frame, "UAA", 13)
+
+        # Mensaje de resultados
+        self.resultado_label = CTkLabel(frame2, text="", text_color="gray", font=("", 14, "italic"))
+        self.resultado_label.grid(row=0, column=1, sticky="nsew", pady=10, padx=30)
+
+        # Configuración de rejilla
+        for i in range(15):
+            scrollable_frame.grid_rowconfigure(i, weight=1)
+        scrollable_frame.grid_columnconfigure(0, weight=1)
 
     def create_entry(self, parent, placeholder, row, show=None):
-        entry = CTkEntry(parent, text_color="white", placeholder_text=placeholder, 
-                         fg_color="black", placeholder_text_color="white", 
+        entry = CTkEntry(parent, text_color="white", placeholder_text=placeholder,
+                         fg_color="black", placeholder_text_color="white",
                          font=("", 16, "bold"), corner_radius=15, height=45, show=show)
-        entry.grid(row=row, column=0, sticky="nsew", padx=30, pady=5)
+        entry.grid(row=row, column=0, sticky="ew", padx=30, pady=5)
         return entry
 
     def validar_datos(self):
-        nombre = self.nombres.get()
-        apellido = self.apellidos.get()
-        correo = self.dni.get()
-        password = self.password.get()
-        
-        if not (nombre.replace(" ", "").isalpha() and apellido.replace(" ", "").isalpha()):
-            self.resultado_label.configure(text="Nombre y apellido deben contener solo letras.", text_color="red")
+        # Validar los campos básicos
+        campos = {
+            "Nombre": self.Nombres.get(),
+            "Apellidos": self.Apellidos.get(),
+            "Fecha Ingreso": self.Fecha_Ingreso.get(),
+            "Fecha Salida": self.Fecha_Salida.get(),
+            "Cantidad": self.Cantidad.get()
+        }
+
+        for campo, valor in campos.items():
+            if not valor.strip():
+                self.resultado_label.configure(
+                    text=f"El campo '{campo}' no puede estar vacío.",
+                    text_color="red"
+                )
+                return
+
+        # Validar que la cantidad sea un número
+        try:
+            cantidad = int(self.Cantidad.get())
+            if cantidad <= 0:
+                raise ValueError
+        except ValueError:
+            self.resultado_label.configure(
+                text="La cantidad debe ser un número positivo.",
+                text_color="red"
+            )
             return
-        
-        # Validate email format
-        patron_correo = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-        if not re.match(patron_correo, correo):
-            self.resultado_label.configure(text="El correo electrónico no tiene un formato válido.", text_color="red")
-            return
-        
-        patron_password = r"\d+"  # Password must contain only numbers
-        if not re.match(patron_password, password):
-            self.resultado_label.configure(text="La contraseña solo debe tener números.", text_color="red")
-            return
-        
-        self.resultado_label.configure(text="Validación exitosa.", text_color="green")
+
+        # Validar otros formatos si es necesario (por ejemplo, fechas)
+
+        self.resultado_label.configure(
+            text="Todos los datos son válidos. Guardando información...",
+            text_color="green"
+        )
+
